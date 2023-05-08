@@ -7,7 +7,8 @@ Este é um projeto que consiste em um backend Django e um frontend React para o 
 O backend deste projeto foi desenvolvido em Django. Siga as etapas abaixo para configurar e executar o backend:
 
 ### Instalação
-``````
+
+
 1.Clone o repositório:
 
    ```
