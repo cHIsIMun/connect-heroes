@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import Post from './Post';
+import { getFeedData } from '../Api';
 
 const Feed = () => {
   const [feedData, setFeedData] = useState([]);
@@ -9,13 +9,7 @@ const Feed = () => {
   useEffect(() => {
     const fetchFeedData = async () => {
       try {
-        const authToken = localStorage.getItem('authToken');
-        const response = await axios.get('http://127.0.0.1:8000/FeedUser/', {
-          headers: {
-            'Authorization': `Token ${authToken}`,
-          },
-        });
-        const data = response.data;
+        const data = await getFeedData();
         setFeedData(data);
         setUserId(data.user_id); // Definir o ID do usuário atual
       } catch (error) {

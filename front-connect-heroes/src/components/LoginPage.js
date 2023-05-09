@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { login } from '../Api'; // Importe a função de login do arquivo Api.js
 
 const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Verifica se o usuário está autenticado (exemplo: verificando se há um token válido)
+    const authToken = localStorage.getItem('authToken');
+    if (authToken) {
+      // Redireciona o usuário para a página principal
+      navigate('/');
+    }
+  }, [navigate]);
 
   const handleUsernameChange = (event) => {
     setUsername(event.target.value);
@@ -16,30 +28,16 @@ const LoginPage = () => {
     event.preventDefault();
 
     try {
-      // Faz a requisição para obter o token de autenticação
-      const response = await fetch('http://127.0.0.1:8000/api-token-auth/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
+      // Faz a requisição para obter o token de autenticação usando a função de login do arquivo Api.js
+      const data = await login(username, password);
+      const authToken = data.token;
 
-      // Verifica se a requisição foi bem sucedida
-      if (response.ok) {
-        const data = await response.json();
-        const authToken = data.token;
+      // Armazena o token de autenticação em algum local de armazenamento
+      // como localStorage, contexto ou estado global do Redux
+      localStorage.setItem('authToken', authToken);
 
-        // Armazena o token de autenticação em algum local de armazenamento
-        // como localStorage, contexto ou estado global do Redux
-        // Exemplo utilizando localStorage:
-        localStorage.setItem('authToken', authToken);
-
-        // Redireciona o usuário para a página principal após o login
-        window.location.href = '/'; // Altere para a rota desejada
-      } else {
-        console.error('Erro de autenticação:', response.status);
-      }
+      // Redireciona o usuário para a página principal após o login
+      navigate('/'); // Altere para a rota desejada
     } catch (error) {
       console.error('Erro:', error);
     }
